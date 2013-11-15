@@ -5,7 +5,7 @@ module Linkedin
     USER_AGENTS = ["Windows IE 6", "Windows IE 7", "Windows Mozilla", "Mac Safari", "Mac FireFox", "Mac Mozilla", "Linux Mozilla", "Linux Firefox", "Linux Konqueror"]
 
 
-    attr_accessor :country, :current_companies, :education, :first_name, :groups, :industry, :last_name, :linkedin_url, :location, :page, :past_companies, :picture, :recommended_visitors, :skills, :title, :websites, :organizations, :summary, :certifications, :languages
+    attr_accessor :country, :current_companies, :education, :first_name, :groups, :industry, :last_name, :linkedin_url, :location, :page, :past_companies, :picture, :recommended_visitors, :skills, :title, :websites, :organizations, :summary, :certifications, :languages, :connections
 
 
     def initialize(page,url)
@@ -30,6 +30,7 @@ module Linkedin
       @skills               = get_skills(page)
       @languages            = get_languages(page)
       @page                 = page
+      @connections          = get_connections(page)
     end
     #returns:nil if it gives a 404 request
 
@@ -85,6 +86,9 @@ module Linkedin
       page.at(".description.summary").text.gsub(/\s+/, " ").strip if page.search(".description.summary").first
     end
 
+    def get_connections page
+      return page.at(".overview-connections").text.split(" ").first.strip if page.search(".overview-connections").first
+    end
 
     def get_picture page
       return page.at("#profile-picture/img.photo").attributes['src'].value.strip if page.search("#profile-picture/img.photo").first
